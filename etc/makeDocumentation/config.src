@@ -1,0 +1,5 @@
+# Include override doxygen config values here
+INPUT += ../../adPythonApp/scripts/
+EXAMPLE_PATH += ../../adPythonApp/scripts/
+FILTER_PATTERNS += *.py=./doxygen_filter.sh
+FILE_PATTERNS          += *.py

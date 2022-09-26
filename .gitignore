@@ -1,0 +1,14 @@
+O.*
+bin/
+lib/
+data/
+iocs/
+*.pyc
+*~
+dbd/
+db/
+documentation/
+.DS_Store
+._*
+.idea/
+cmake-build*/
