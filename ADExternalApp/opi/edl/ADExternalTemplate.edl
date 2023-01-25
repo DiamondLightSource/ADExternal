@@ -1,0 +1,561 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 908
+y 247
+w 390
+h 820
+font "arial-bold-r-12.0"
+ctlFont "arial-bold-r-12.0"
+btnFont "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+textColor index 14
+ctlFgColor1 index 25
+ctlFgColor2 index 25
+ctlBgColor1 index 3
+ctlBgColor2 index 3
+topShadowColor index 1
+botShadowColor index 11
+showGrid
+snapToGrid
+gridSize 5
+endScreenProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 0
+y 0
+w 390
+h 385
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+displaySource "file"
+file "NDPluginBase"
+sizeOfs 5
+numDsps 2
+displayFileName {
+  0 "NDPluginBase"
+  1 "NDPluginBase"
+}
+noScroll
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 0
+y 385
+w 390
+h 160
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+displaySource "file"
+file "ADExternalPlugin"
+sizeOfs 5
+numDsps 2
+displayFileName {
+  0 "NDPluginBase"
+  1 "NDPluginBase"
+}
+noScroll
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 560
+w 380
+h 155
+lineColor index 14
+fill
+fillColor index 3
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 5
+y 550
+w 79
+h 13
+font "arial-medium-r-12.0"
+fgColor index 14
+bgColor index 5
+value {
+  "  Parameters  "
+}
+autoSize
+border
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 10
+y 590
+w 370
+h 20
+
+beginGroup
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 10
+y 590
+w 240
+h 20
+controlPv "$(P)$(R)Int2Name_RBV"
+fgColor index 14
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 255
+y 590
+w 60
+h 20
+controlPv "$(P)$(R)Int2"
+fgColor index 25
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 320
+y 590
+w 60
+h 20
+controlPv "$(P)$(R)Int2_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+endGroup
+
+visPv "$(P)$(R)Int2Name_RBV"
+visMin "0"
+visMax "1"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 10
+y 615
+w 370
+h 20
+
+beginGroup
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 10
+y 615
+w 240
+h 20
+controlPv "$(P)$(R)Int3Name_RBV"
+fgColor index 14
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 255
+y 615
+w 60
+h 20
+controlPv "$(P)$(R)Int3"
+fgColor index 25
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 320
+y 615
+w 60
+h 20
+controlPv "$(P)$(R)Int3_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+endGroup
+
+visPv "$(P)$(R)Int3Name_RBV"
+visMin "0"
+visMax "1"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 10
+y 640
+w 370
+h 20
+
+beginGroup
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 10
+y 640
+w 240
+h 20
+controlPv "$(P)$(R)Double1Name_RBV"
+fgColor index 14
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 255
+y 640
+w 60
+h 20
+controlPv "$(P)$(R)Double1"
+fgColor index 25
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 320
+y 640
+w 60
+h 20
+controlPv "$(P)$(R)Double1_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+endGroup
+
+visPv "$(P)$(R)Double1Name_RBV"
+visMin "0"
+visMax "1"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 10
+y 665
+w 370
+h 20
+
+beginGroup
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 320
+y 665
+w 60
+h 20
+controlPv "$(P)$(R)Double2_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 255
+y 665
+w 60
+h 20
+controlPv "$(P)$(R)Double2"
+fgColor index 25
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 10
+y 665
+w 240
+h 20
+controlPv "$(P)$(R)Double2Name_RBV"
+fgColor index 14
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+endGroup
+
+visPv "$(P)$(R)Double2Name_RBV"
+visMin "0"
+visMax "1"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 10
+y 690
+w 370
+h 20
+
+beginGroup
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 10
+y 690
+w 240
+h 20
+controlPv "$(P)$(R)Double3Name_RBV"
+fgColor index 14
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 255
+y 690
+w 60
+h 20
+controlPv "$(P)$(R)Double3"
+fgColor index 25
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 320
+y 690
+w 60
+h 20
+controlPv "$(P)$(R)Double3_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+endGroup
+
+visPv "$(P)$(R)Double3Name_RBV"
+visMin "0"
+visMax "1"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 10
+y 565
+w 370
+h 20
+
+beginGroup
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 10
+y 565
+w 240
+h 20
+controlPv "$(P)$(R)Int1Name_RBV"
+fgColor index 14
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 255
+y 565
+w 60
+h 20
+controlPv "$(P)$(R)Int1"
+fgColor index 25
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 320
+y 565
+w 60
+h 20
+controlPv "$(P)$(R)Int1_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+endGroup
+
+visPv "$(P)$(R)Int1Name_RBV"
+visMin "0"
+visMax "1"
+endObjectProperties
+

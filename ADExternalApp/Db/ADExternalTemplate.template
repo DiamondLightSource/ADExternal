@@ -1,0 +1,116 @@
+# % macro, P, Device Prefix
+# % macro, R, Device Suffix
+# % macro, PORT, Asyn Port name
+# % macro, TIMEOUT, Timeout
+# % macro, ADDR, Asyn Port address
+# % gui, $(PORT), edmtab, ADExternalTemplate.edl, P=$(P),R=$(R)
+
+record(longin, "$(P)$(R)Int1_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iInt1")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)Int1") {
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iInt1")
+}
+
+record(stringin, "$(P)$(R)Int1Name_RBV") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))sInt1Name")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)Int2_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iInt2")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)Int2") {
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iInt2")
+}
+
+record(stringin, "$(P)$(R)Int2Name_RBV") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))sInt2Name")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)Int3_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iInt3")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)Int3") {
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iInt3")
+}
+
+record(stringin, "$(P)$(R)Int3Name_RBV") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))sInt3Name")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Double1_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dDouble1")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
+record(ao, "$(P)$(R)Double1") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dDouble1")
+    field(PREC, "3")
+}
+
+record(stringin, "$(P)$(R)Double1Name_RBV") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dDouble1Name")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Double2_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dDouble2")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
+record(ao, "$(P)$(R)Double2") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dDouble2")
+    field(PREC, "3")
+}
+
+record(stringin, "$(P)$(R)Double2Name_RBV") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dDouble2Name")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Double3_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dDouble3")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
+record(ao, "$(P)$(R)Double3") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dDouble3")
+    field(PREC, "3")
+}
+
+record(stringin, "$(P)$(R)Double3Name_RBV") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dDouble3Name")
+    field(SCAN, "I/O Intr")
+}
+
+
