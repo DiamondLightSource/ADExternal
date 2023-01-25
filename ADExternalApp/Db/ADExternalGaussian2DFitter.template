@@ -1,0 +1,125 @@
+# % macro, P, Device Prefix
+# % macro, R, Device Suffix
+# % macro, PORT, Asyn Port name
+# % macro, TIMEOUT, Timeout
+# % macro, ADDR, Asyn Port address
+# % gui, $(PORT), edmtab, ADExternalGaussian2DFitter.edl, P=$(P),R=$(R)
+
+record(longin, "$(P)$(R)FitWindowSize_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iFitWindowSize")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)FitWindowSize") {
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iFitWindowSize")
+}
+
+record(longin, "$(P)$(R)FitThinning_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iFitThinning")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)FitThinning") {
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iFitThinning")
+}
+
+record(longin, "$(P)$(R)Maxiter_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iMaxiter")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)Maxiter") {
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iMaxiter")
+}
+
+record(longin, "$(P)$(R)PeakHeight_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iPeakHeight")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)OriginX_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iOriginX")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)OriginY_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iOriginY")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)FitType_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iFitType")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Baseline_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dBaseline")
+    field(SCAN, "I/O Intr")
+    field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)SigmaX_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dSigmaX")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)SigmaY_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dSigmaY")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)Angle_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dAngle")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)Error_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dError")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
+record(stringin, "$(P)$(R)FitStatus_RBV") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))sFitStatus")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)FitType_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iFitType")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)EnableFilter") {
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iEnableFilter")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+record(bi, "$(P)$(R)EnableFilter_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iEnableFilter")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(SCAN, "I/O Intr")
+}
