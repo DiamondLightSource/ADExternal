@@ -1,9 +1,6 @@
 # Protocol between AD plugin and worker program
 - The AD plugin provides a unix socket to talk to the workers
 - Every message is a JSON in which the root element is an object.
-- Every answer to a request contains an "ok" boolean value which indicates
-  if it was processed successfully, if not, it will additionally provide an
-  "err" string with the error message
 - The frame data is passed in shared memory
 
 ## Handshake
