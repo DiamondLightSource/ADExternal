@@ -1,1 +1,4 @@
 # Place any example specific dependencies here
+ADCORE = /home/hir12111/work/src/AD/ADCore
+ADURL = /home/hir12111/work/src/AD/ADURL
+FFMPEG_SERVER = /home/hir12111/work/src/AD/ffmpegServer
