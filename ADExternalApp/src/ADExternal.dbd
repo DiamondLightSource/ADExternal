@@ -1,0 +1,2 @@
+registrar("ADExternalPluginRegister")
+registrar("SharedMemCommandRegister")

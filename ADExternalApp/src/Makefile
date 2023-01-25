@@ -14,20 +14,33 @@ USR_CPPFLAGS += -isystem $(EPICS_BASE)/include
 USR_CXXFLAGS += -Werror
 USR_CXXFLAGS += -Wall -Wextra
 USR_CXXFLAGS += -Wundef
-USR_CXXFLAGS += -Wshadow
 USR_CXXFLAGS += -Wcast-align
 USR_CXXFLAGS += -Wwrite-strings
 USR_CXXFLAGS += -Wredundant-decls
 USR_CXXFLAGS += -Wmissing-declarations
 USR_CXXFLAGS += -Wno-unused-parameter
+USR_CXXFLAGS += -Wno-class-memaccess
 USR_CXXFLAGS += -D__STDC_VERSION__
+USR_CXXFLAGS += -std=c++11
 
-LIBRARY_IOC += adExternal
+USR_CFLAGS += -Werror
+USR_CFLAGS += -Wall -Wextra
+USR_CFLAGS += -std=gnu99
 
-# adExternalPlugin.dbd will be installed into <top>/dbd
-DBD += adExternalPlugin.dbd
+LIBRARY_IOC += ADExternal
+
+# ADExternalPlugin.dbd will be installed into <top>/dbd
+DBD += ADExternal.dbd
 
 # The following are compiled and added to the support library
-adExternal_SRCS += adExternalPlugin.cpp
+ADExternal_SRCS += ADExternalPlugin.cpp
+ADExternal_SRCS += ADExternalPlugin_frame.cpp
+ADExternal_SRCS += ADExternalPlugin_iocsh.cpp
+ADExternal_SRCS += ADExternalPlugin_handshake.cpp
+ADExternal_SRCS += ADExternalPlugin_parameters.cpp
+ADExternal_SRCS += shared_mem_iocsh.cpp
+ADExternal_SRCS += utils.cpp
+ADExternal_SRCS += server.c
+ADExternal_SRCS += shared_mem.c
 
 include $(TOP)/configure/RULES

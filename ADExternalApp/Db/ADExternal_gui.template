@@ -1,0 +1,5 @@
+# Macros:
+# % macro, PORT,      Asyn Port name
+# % macro, P,         Device Prefix
+# % macro, R,         Device Suffix
+# % gui, $(PORT), edmtab, ADExternal.edl, P=$(P),R=$(R)

@@ -20,12 +20,13 @@
 # CONFIG_SITE file.
 
 TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
-SUPPORT=/dls_sw/prod/R3.14.12.7/support
-WORK=/dls_sw/work/R3.14.12.7/support
-TOOLS_BASE=/dls_sw/prod/tools/RHEL7-x86_64
+# SUPPORT=None
+# WORK=None
+# TOOLS_BASE=None
+# SUPPORT=None
 
-ASYN = $(SUPPORT)/asyn/4-41
-ADCORE = $(SUPPORT)/ADCore/3-12-1dls2
+ASYN=/dls_sw/prod/R3.14.12.7/support/asyn/4-41
+ADCORE=/home/hir12111/work/src/AD/ADCore
 
 # EPICS_BASE usually appears last so other apps can override stuff:
 EPICS_BASE=/dls_sw/epics/R3.14.12.7/base
