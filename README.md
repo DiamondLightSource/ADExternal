@@ -26,6 +26,9 @@ overhead
 - The asyn parameters that are updated by the worker should have a name that
  starts with a letter indicating the type (`i` for integer, `d` for double or
  `s` for string)
+- A worker that creates a new frame can only do it with size equals or less than
+the input frame size, that is a consequence of reusing the same shared memory
+area for the output frame.
 
 ## Quickstart
 - Configure the plugin in the target IOC
