@@ -1,5 +1,5 @@
-#!/scratch/hir12111/pipenv/fit_lib-WlZucMEP/bin/python
 #!/dls_sw/prod/python3/RHEL7-x86_64/fit_lib/1.4/lightweight-venv/bin/python
+
 import logging
 import numpy
 
@@ -11,11 +11,6 @@ from ADExternalPlugin import ADExternalPlugin
 
 import scipy.ndimage
 
-
-# fit_lib has been copied into the repo to easily allow a workaround for a numpy issue to be implemented:
-# It appears that when numpy attempts to multiply/divide numbers in an array which are close to zero (e.g. 1e-320)
-# the thread hangs indefinitely and throws no error.
-# As such checks have been put in place to set any such numbers to zero exactly.
 
 class Gaussian2DFitter(ADExternalPlugin):
     tempCounter = 0
@@ -89,7 +84,6 @@ class Gaussian2DFitter(ADExternalPlugin):
         for param in self:
             attr[param] = self[param]
 
-        # Write something to the logs
         self.log.debug(
             "Array processed, baseline: %f, peak height: %d, origin x: %d, " +
             "origin y: %d, sigma x: %f, sigma y: %f, angle: %f, error: %f",
