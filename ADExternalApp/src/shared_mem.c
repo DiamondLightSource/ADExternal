@@ -72,6 +72,7 @@ void *shared_mem_malloc(struct shared_mem_context *context, size_t size)
             return pos->start;
         }
     }
+
     return NULL;
 }
 
@@ -114,17 +115,15 @@ struct shared_mem_context *shared_mem_create(const char *name, size_t size)
     if (fd < 0 || rc < 0)
         goto err_out;
 
-    context->addr = mmap(NULL, context->size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    context->addr = mmap(
+        NULL, context->size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     close(fd);
     if (context->addr == MAP_FAILED)
         goto err_out;
-    
+
     INIT_LIST_HEAD(&context->free_list);
     INIT_LIST_HEAD(&context->used_list);
-    struct mem_area
- *area =
-        (struct mem_area
-     *) malloc(sizeof(struct mem_area));
+    struct mem_area *area = (struct mem_area *) malloc(sizeof(struct mem_area));
     area->start = context->addr;
     area->size = context->size;
     _mem_area_add_free(context, area);
@@ -138,8 +137,7 @@ err_out:
 
 void shared_mem_print(struct shared_mem_context *context)
 {
-    struct mem_area
- *pos; 
+    struct mem_area *pos;
     int i=0;
     list_for_each_entry(pos, &context->free_list, list) {
         printf("free area %d: start=%p size=%lu\n", i++, pos->start, pos->size);
