@@ -33,6 +33,7 @@ class Gaussian2DFitter(ADExternalPlugin):
         ADExternalPlugin.__init__(self, params)
 
     def processArray(self, arr, attr={}):
+        failed = False
         # Convert the array to a float so that we do not overflow during processing.
         arr2 = numpy.float_(arr)
         # Run a median filter over the image to remove the spikes due to dead
@@ -57,7 +58,14 @@ class Gaussian2DFitter(ADExternalPlugin):
             self["iFitType"] = 0
         except FitError as e:
             self["sFitStatus"] = "Fit error: %s" % (e,)
-            self["iFitType"] = 1
+            self["iFitType"] = -1
+            failed = True
+        except Exception as e:
+            self["sFitStatus"] = "error: %s" % (e,)
+            self["iFitType"] = -1
+            failed = True
+
+        if failed:
             cx, cy, s_x, s_y, h0 = [0]*5
             th = 0.0
             fit = [0.0, h0, cx, cy]
