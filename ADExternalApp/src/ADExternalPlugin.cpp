@@ -183,12 +183,12 @@ void ADExternalPlugin::_process_working_worker_message(
     worker->frame = NULL;
     epicsTimeStamp ts_end;
     epicsTimeGetCurrent(&ts_end);
-    //this->lock();
+    this->lock();
     setDoubleParam(
         procTimeParam,
         epicsTimeDiffInSeconds(&ts_end, &worker->ts_start) * 1000);
     callParamCallbacks();
-    //this->unlock();
+    this->unlock();
     epicsEventSignal(hasWorker);
 }
 
