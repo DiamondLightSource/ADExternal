@@ -22,10 +22,17 @@ overhead
 ## Limitations
 - This plugin makes ADCore use shared memory for frame allocation and therefore,
  it requires a version of ADCore that allows doing that.
-- There can only be one of this type of plugin
+- There can only be one shared memory per IOC (given that it is used for every
+  frame allocation), if there are multiple ADExternal instances, only the first
+  instance will create the shared memory and the rest will use the same one,
+  make sure that memory size is big enough for all the area detector plugins
+  and drivers used.
+- Each ADExternal instance must use a different socket path
 - The asyn parameters that are updated by the worker should have a name that
  starts with a letter indicating the type (`i` for integer, `d` for double or
  `s` for string)
+- Asyn parameters' initial values are determined by workers and all of them
+  should use the same values (this could be changed if needed)
 - A worker that creates a new frame can only do it with size equals or less than
 the input frame size, that is a consequence of reusing the same shared memory
 area for the output frame.

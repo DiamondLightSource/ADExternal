@@ -66,19 +66,21 @@ ADExternalPlugin::ADExternalPlugin(
         ASYN_ERROR("%s: Failed to create server\n", driverName);
         return;
     }
-    shmem = shared_mem_create(shmName, maxMemory);
-    if (!shmem) {
-        ASYN_ERROR("%s: Failed to create shared memory\n", driverName);
-        return;
-    }
+
     if (_global_shared_mem) {
-        ASYN_ERROR(
-            "%s: Only one instance of ADExternal is allowed per IOC\n",
-            driverName);
-        return;
+        ASYN_FLOW("%s: using already created shared memory\n", driverName);
+        /* we are assuming initialization is serialised, it is true now, but
+         * might change in future */
+        shmem = _global_shared_mem;
+    } else {
+        shmem = shared_mem_create(shmName, maxMemory);
+        if (!shmem) {
+            ASYN_ERROR("%s: Failed to create shared memory\n", driverName);
+            return;
+        }
+        _global_shared_mem = shmem;
+        setADFrameMemoryFunctions(new_frame_malloc, new_frame_free);
     }
-    _global_shared_mem = shmem;
-    setADFrameMemoryFunctions(new_frame_malloc, new_frame_free);
     setStringParam(NDPluginDriverPluginType, "ADExternalPlugin");
     createParam("WORKERSNUM", asynParamInt32, &workersNumParam);
     createParam("CLASSNAME", asynParamOctet, &classNameParam);
@@ -99,7 +101,12 @@ ADExternalPlugin::ADExternalPlugin(
 
 void ADExternalPlugin::shutdown()
 {
-    shared_mem_destroy(shmem);
+    if (_global_shared_mem) {
+        /* we are assuming shutdown is serialised, it is true now, but might
+         * change in future */
+        shared_mem_destroy(shmem);
+        _global_shared_mem = NULL;
+    }
     server_destroy(server);
 }
 

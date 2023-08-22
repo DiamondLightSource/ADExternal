@@ -18,6 +18,8 @@
 #define NUSERPARAMS 100
 
 #define ASYN_ERROR(...) asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, __VA_ARGS__)
+#define ASYN_WARN(...) asynPrint(pasynUserSelf, ASYN_TRACE_WARNING, __VA_ARGS__)
+#define ASYN_FLOW(...) asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, __VA_ARGS__)
 
 
 enum worker_state {
