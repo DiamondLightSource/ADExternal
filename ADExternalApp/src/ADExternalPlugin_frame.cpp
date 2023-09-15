@@ -33,6 +33,8 @@ bool ADExternalPlugin::_send_frame_to_worker(
     writer.Int(pArray->uniqueId);
     writer.String("frame_loc");
     writer.Uint64((uint64_t) pArray->pData - (uint64_t) shmem->addr);
+    writer.String("ts");
+    writer.Double((double) pArray->timeStamp);
     writer.EndObject();
     ssize_t rc;
     if((rc=write(worker->sock,

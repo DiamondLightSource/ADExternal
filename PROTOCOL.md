@@ -22,12 +22,13 @@
 ## Sending frames
 - The AD plugin will tell the worker to process a frame by sending a message
   like this:
-`{"frame_dims": (1024, 768), "data_type": "uint8", "frame_loc": 0}`
+`{"frame_dims": (1024, 768), "data_type": "uint8", "frame_loc": 0, "ts": 41810261.4522744}`
 - "data\_type" indicates the data type, first part indicates if is signed
 integer(int), unsigned integer(uint) or float(float), then follows a number
 indicating bits of data type
-- "frame\_loc" indicate the offset of the frame data from the start of shared
-memory
+- "frame\_loc" indicates the offset in bytes from the frame data from the start
+of shared memory
+- "ts" indicates the timestamp associated to the frame
 
 ## Receiving frames
 - The worker will notify the AD plugin of a frame by sending a message
