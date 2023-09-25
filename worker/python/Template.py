@@ -1,6 +1,4 @@
 #!/dls_sw/prod/python3/RHEL7-x86_64/pymalcolm/6.2/lightweight-venv/bin/python
-import logging
-
 from numpy import add
 
 from ADExternalPlugin import ADExternalPlugin

@@ -1,6 +1,5 @@
 #!/dls_sw/prod/python3/RHEL7-x86_64/fit_lib/1.4/lightweight-venv/bin/python
 
-import logging
 import numpy
 
 from fit_lib import fit_lib
@@ -14,6 +13,7 @@ import scipy.ndimage
 
 class Gaussian2DFitter(ADExternalPlugin):
     tempCounter = 0
+
     def __init__(self):
         params = dict(iPeakHeight=1,
                       iOriginX=2,
@@ -34,7 +34,8 @@ class Gaussian2DFitter(ADExternalPlugin):
 
     def processArray(self, arr, attr={}):
         failed = False
-        # Convert the array to a float so that we do not overflow during processing.
+        # Convert the array to a float so that we do not overflow during
+        # processing.
         arr2 = numpy.float_(arr)
         # Run a median filter over the image to remove the spikes due to dead
         # pixels.
@@ -52,7 +53,8 @@ class Gaussian2DFitter(ADExternalPlugin):
 
             # fit outputs in terms of ABC we want sigma x, sigma y and angle.
             s_x, s_y, th = convert_abc(*fit[4:7])
-            if any([fit[i+2] < -arr2.shape[i] or fit[i+2] > 2*arr2.shape[i] for i in [0, 1]]):
+            if any([fit[i+2] < -arr2.shape[i]
+                    or fit[i+2] > 2*arr2.shape[i] for i in [0, 1]]):
                 raise FitError("Fit out of range")
             self["sFitStatus"] = "Gaussian Fit OK"
             self["iFitType"] = 0
@@ -103,5 +105,5 @@ class Gaussian2DFitter(ADExternalPlugin):
         return arr
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     Gaussian2DFitter().run()

@@ -55,5 +55,5 @@ In this case, it uses an example worker type called `Template`.
 
 - Run the worker passing the path to the unix socket
 ```bash
-$ python worker/python/ADExternalTemplate.py /tmp/unix_sock_name.sock
+$ python worker/python/Template.py /tmp/unix_sock_name.sock
 ```
