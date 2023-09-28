@@ -67,7 +67,13 @@ class ADExternalPlugin(object):
         return iter(self._params)
 
     # default paramChanged does nothing
-    def paramChanged(self):
+    def params_changed(self, new_params):
+        pass
+
+    def process_array(self, arr, attr={}):
+        return arr
+
+    def on_connected(self, server_params={}):
         pass
 
     def _send_msg(self, msg):
@@ -95,11 +101,10 @@ class ADExternalPlugin(object):
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET, 0)
         self.sock.connect(socket_path)
 
-    def _update_params(self, params):
+    def _update_from_recved_params(self, params):
         if params:
             self._params.update(params)
-            self._new_params.update(params)
-            self.paramChanged()
+            self.params_changed(params)
 
     def _offset_inside_shmem(self, offset):
         return offset >= 0 and offset < self.shm_size
@@ -138,15 +143,19 @@ class ADExternalPlugin(object):
             self.log.error('Failed during handshake: %s', msg.get('err'))
             return
 
+        server_params = msg.get(PARAMS_FIELD, {})
+        self._update_from_recved_params(server_params)
         self._mmap_shared_memory(msg['shm_name'])
 
-        # make sure they receive parameters set by us
+        # make sure they receive parameters value forced by us
         self._send_msg({PARAMS_FIELD: self._new_params})
         self._new_params = {}
 
+        self.on_connected(server_params)
+
         while not self.want_quit:
             msg = self._recv_msg()
-            self._update_params(msg.get(PARAMS_FIELD))
+            self._update_from_recved_params(msg.get(PARAMS_FIELD, {}))
             frame_offset = msg.get('frame_loc')
             if frame_offset is not None:
                 arr = self._get_array_from_shared_memory(
@@ -159,7 +168,7 @@ class ADExternalPlugin(object):
                     'Received frame with buffer in %x', old_arr_data)
                 attrs = {}
 
-                new_arr = self.processArray(arr, attrs)
+                new_arr = self.process_array(arr, attrs)
 
                 if new_arr is None:
                     # we didn't produce any frame but parameter might have

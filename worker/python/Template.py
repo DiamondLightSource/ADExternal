@@ -21,12 +21,12 @@ class Template(ADExternalPlugin):
         ADExternalPlugin.__init__(self, params)
         self.dont_copy = dont_copy
 
-    def paramChanged(self):
+    def params_changed(self, new_params):
         # one of our input parameters has changed
         # just log it for now, do nothing.
-        self.log.debug("Parameter has been changed %s", self)
+        self.log.debug("Parameter has been changed %s", new_params)
 
-    def processArray(self, arr, attr={}):
+    def process_array(self, arr, attr={}):
         if self['iInt3'] == MODE_DONOTHING:
             return arr
 
