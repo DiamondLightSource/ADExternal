@@ -43,6 +43,7 @@ void ADExternalPlugin::_send_handshake_ok(struct worker_context *worker)
     writer.Bool(true);
     writer.String("shm_name");
     writer.String(shmName.c_str());
+    _populate_vars_in_json(writer);
     writer.EndObject();
     epicsMutexLock(workersMutex);
     ssize_t rc;

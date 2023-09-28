@@ -36,8 +36,7 @@ class ADExternalPlugin(object):
     def __init__(self, params={}):
         self.log = logging.getLogger(self.__class__.__name__)
         self._params = dict(params)
-        # initially all of them are new
-        self._new_params = dict(self._params)
+        self._new_params = {}
         self.want_quit = False
         self.sock = None
 

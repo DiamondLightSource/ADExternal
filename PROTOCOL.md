@@ -10,7 +10,8 @@
   message and close the connection.
   If the server expects that worker, it will send a message indicating the name
   of the shared memory file (which will be present in /dev/shm), e.g.
-  `{"ok": true, "shm_name": "shm_file1"}`,
+  `{"ok": true, "shm_name": "shm_file1", "vars": {}}`, this message can also
+  contain a set of values for the plugin parameters inside key "vars"
 
 ## Updating parameters
 - The worker can update AD parameters by sending a message with a "vars" object,
