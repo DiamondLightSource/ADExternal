@@ -11,7 +11,7 @@ record(stringin, "$(P)$(R)ExtName")
 {
   field(DESC, "Name of external plugin required")
   field(DTYP, "asynOctetRead")
-  field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT=1))EXTNAME")
+  field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CLASSNAME")
   field(SCAN, "I/O Intr")
   field(PINI, "YES")
 }
