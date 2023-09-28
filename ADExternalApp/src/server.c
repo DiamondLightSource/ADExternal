@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <errno.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <sys/epoll.h>
 #include <sys/socket.h>
@@ -144,6 +145,10 @@ struct server_context *server_create(const char *path)
     struct epoll_event ev;
     struct server_context *server = calloc(sizeof(struct server_context), 1);
     strncpy(server->sock_path, path, MAX_SOCK_PATH_LENGTH);
+    if (access(server->sock_path, F_OK) == 0) {
+        printf("server: path exists ... trying to remove\n");
+        unlink(server->sock_path);
+    }
     server->listening_sock = listen_new_socket(path);
     server->epoll = epoll_create1(0);
     ev.events = EPOLLIN;
