@@ -3,5 +3,6 @@
 	<ADURL.URLDriver ADDR="0" P="HIR12111" PORT="ad.cam" R=":CAM:" TIMEOUT="1"/>
 	<ADExternal.ADExternal CLASS_NAME="Gaussian2DFitter" NDARRAY_PORT="ad.cam" P="example_pv" PORT="ad.ext" R=":EXT:"/>
 	<ffmpegServer.ffmpegStream NDARRAY_PORT="ad.cam" P="HIR12111" PORT="ad.mpeg" R=":MPEG:"/>
+	<ADExternal.Gaussian2DFitterTemplate P="example_pv" PORT="ad.ext" R=":EXT:" name="ext1gauss"/>
 	<EPICS_BASE.StartupCommand command="dbpf &quot;HIR12111:CAM:URL1&quot; &quot;/home/hir12111/work/gige-di-cameras/images_set2_16/myfile3.mat.png&quot;" post_init="True"/>
 </components>

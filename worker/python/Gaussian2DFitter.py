@@ -11,10 +11,49 @@ from ADExternalPlugin import ADExternalPlugin
 import scipy.ndimage
 
 
+def restrict(val, min_val, max_val):
+    if val < min_val:
+        return min_val
+
+    if val > max_val:
+        return max_val
+
+    return val
+
+
+class AutoExposureControl(object):
+    def __init__(self, init_step, min_val, max_val):
+        self.set_parameters(init_step, min_val, max_val)
+
+    def set_parameters(self, init_step, min_val, max_val):
+        self.init_step = init_step
+        self.min_val = min_val
+        self.max_val = max_val
+        self.next_step = init_step
+        self.max_step = abs(max_val - min_val)
+        self.init_step = init_step
+        self.last_direction = 0
+
+    def updated_value(self, current, direction=0):
+        # update direction: 1 up -1 down 0 stand
+        if direction == 0 or direction != self.last_direction:
+            step = self.init_step
+            self.next_step = self.init_step
+        else:  # direction == self.last_direction
+            step = self.next_step
+            self.next_step = min(2 * self.next_step, self.max_step)
+
+        new_value = restrict(
+            current + direction*step, self.min_val, self.max_val)
+        self.last_direction = direction
+        return new_value
+
+
 class Gaussian2DFitter(ADExternalPlugin):
     tempCounter = 0
 
     def __init__(self):
+        # default values if server doesn't send us updated ones
         params = dict(iPeakHeight=1,
                       iOriginX=2,
                       iOriginY=3,
@@ -28,12 +67,78 @@ class Gaussian2DFitter(ADExternalPlugin):
                       iMaxiter=20,
                       sFitStatus="",
                       iFitType=-1,
-                      iEnableFilter=0
+                      iEnableFilter=0,
+                      iEnableAutoExposure=0,
+                      dExposure=0.0,
+                      dExposureSp=0.0,
+                      dMinExposure=0.0,
+                      dMaxExposure=2.0,
+                      iMaxPixelMax=254,
+                      iMaxPixelMin=210,
+                      dInitialStep=0.01,
+                      iMinPixelLevel=10
                       )
+        self.auto_exposure = AutoExposureControl(
+                params['dInitialStep'], params['dMinExposure'],
+                params['dMaxExposure'])
         ADExternalPlugin.__init__(self, params)
 
-    def processArray(self, arr, attr={}):
-        failed = False
+    def on_connected(self, params):
+        init_step = params.get('dInitialStep', self['dInitialStep'])
+        min_val = params.get('dMinExposure', self['dMinExposure'])
+        max_val = params.get('dMaxExposure', self['dMaxExposure'])
+        self.auto_exposure.set_parameters(init_step, min_val, max_val)
+
+    def params_changed(self, params):
+        for key in ('dInitialStep', 'dMinExposure', 'dMaxExposure'):
+            if key in params:
+                self.on_connected(params)
+                return
+
+    def reset_results(self):
+        self["iFitType"] = 0
+        self["dBaseline"] = 0.0
+        self["iPeakHeight"] = 0
+        self["iOriginX"] = 0
+        self["iOriginY"] = 0
+        self["dSigmaX"] = 0.0
+        self["dSigmaY"] = 0.0
+        self["dAngle"] = 0.0
+        self["dError"] = 0.0
+
+    def do_fit(self, arr):
+        try:
+            fit, error = doFit2dGaussian(
+                arr, thinning=(self["iFitThinning"], self["iFitThinning"]),
+                window_size=self["iFitWindowSize"], maxiter=self["iMaxiter"],
+                ROI=None, gamma=None, extra_data=False)
+
+            # fit outputs in terms of ABC we want sigma x, sigma y and angle.
+            s_x, s_y, th = convert_abc(*fit[4:7])
+            if any([fit[i+2] < -arr.shape[i]
+                    or fit[i+2] > 2*arr.shape[i] for i in [0, 1]]):
+                raise FitError("Fit out of range")
+
+            self["sFitStatus"] = "Gaussian Fit OK"
+            self["iFitType"] = 0
+            self["dBaseline"] = float(fit[0])
+            self["iPeakHeight"] = int(fit[1])
+            self["iOriginX"] = int(fit[2])
+            self["iOriginY"] = int(fit[3])
+            self["dSigmaX"] = s_x
+            self["dSigmaY"] = s_y
+            self["dAngle"] = th
+            self["dError"] = float(error)
+        except FitError as e:
+            self["sFitStatus"] = "Fit error: %s" % (e,)
+            self["iFitType"] = -1
+            self.reset_results()
+        except Exception as e:
+            self["sFitStatus"] = "error: %s" % (e,)
+            self["iFitType"] = -1
+            self.reset_results()
+
+    def process_array(self, arr, attr={}):
         # Convert the array to a float so that we do not overflow during
         # processing.
         arr2 = numpy.float_(arr)
@@ -42,49 +147,14 @@ class Gaussian2DFitter(ADExternalPlugin):
         if self['iEnableFilter']:
             arr2 = scipy.ndimage.median_filter(arr2, size=3)
 
-        try:
-            self.log.debug(
-                "thinning %d windows %d max iter %d", self["iFitThinning"],
-                self["iFitWindowSize"], self["iMaxiter"])
-            fit, error = doFit2dGaussian(
-                arr2, thinning=(self["iFitThinning"], self["iFitThinning"]),
-                window_size=self["iFitWindowSize"], maxiter=self["iMaxiter"],
-                ROI=None, gamma=None, extra_data=False)
+        max_pixel = arr2.max()
 
-            # fit outputs in terms of ABC we want sigma x, sigma y and angle.
-            s_x, s_y, th = convert_abc(*fit[4:7])
-            if any([fit[i+2] < -arr2.shape[i]
-                    or fit[i+2] > 2*arr2.shape[i] for i in [0, 1]]):
-                raise FitError("Fit out of range")
-            self["sFitStatus"] = "Gaussian Fit OK"
-            self["iFitType"] = 0
-        except FitError as e:
-            self["sFitStatus"] = "Fit error: %s" % (e,)
+        if max_pixel >= self['iMinPixelLevel']:
+            self.do_fit(arr2)
+        else:
+            self["sFitStatus"] = "error: image too dim"
             self["iFitType"] = -1
-            failed = True
-        except Exception as e:
-            self["sFitStatus"] = "error: %s" % (e,)
-            self["iFitType"] = -1
-            failed = True
-
-        if failed:
-            cx, cy, s_x, s_y, h0 = [0]*5
-            th = 0.0
-            fit = [0.0, h0, cx, cy]
-            error = 0.0
-            results = None
-            s_x = 1.0
-            s_y = 1.0
-
-        # Write out to the EDM output parameters.
-        self["dBaseline"] = float(fit[0])
-        self["iPeakHeight"] = int(fit[1])
-        self["iOriginX"] = int(fit[2])
-        self["iOriginY"] = int(fit[3])
-        self["dSigmaX"] = s_x
-        self["dSigmaY"] = s_y
-        self["dAngle"] = th
-        self["dError"] = float(error)
+            self.reset_results()
 
         # Write the attibute array which will be attached to the output array.
         # Note that we convert from the numpy
@@ -101,6 +171,19 @@ class Gaussian2DFitter(ADExternalPlugin):
             self["iOriginY"], self["dSigmaX"], self["dSigmaY"],
             self["dAngle"], self["dError"]
         )
+
+        if self['iEnableAutoExposure']:
+            direction = 1 if max_pixel < self['iMaxPixelMin'] else \
+                       -1 if max_pixel > self['iMaxPixelMax'] else \
+                       0
+            exp_sp = self.auto_exposure.updated_value(self['dExposure'],
+                                                      direction)
+            self.log.debug(
+                'AutoExposure: max_pixel=%d, direction=%d, setpoint=%f',
+                max_pixel, direction, exp_sp)
+            if direction != 0:
+                self['dExposureSp'] = exp_sp
+
         # return the resultant array.
         return arr
 

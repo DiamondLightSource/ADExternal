@@ -1,5 +1,5 @@
 from iocbuilder import AutoSubstitution, Device
-from iocbuilder.arginfo import *
+from iocbuilder.arginfo import makeArgInfo, Simple, Choice, Ident
 from iocbuilder.modules.ADCore import \
     ADCore, includesTemplates, NDPluginBaseTemplate
 from iocbuilder.modules.asyn import AsynPort
@@ -8,6 +8,14 @@ from iocbuilder.modules.asyn import AsynPort
 @includesTemplates(NDPluginBaseTemplate)
 class _ADExternalTemplate(AutoSubstitution):
     TemplateFile = 'ADExternal.template'
+
+
+class TemplateTemplate(AutoSubstitution):
+        TemplateFile = 'ADExternalTemplate.template'
+
+
+class Gaussian2DFitterTemplate(AutoSubstitution):
+        TemplateFile = 'ADExternalGaussian2DFitter.template'
 
 
 # Main device class
@@ -34,17 +42,10 @@ class ADExternal(AsynPort):
         self.__super.__init__(PORT)
         self.__dict__.update(locals())
 
-        # The template wants the asyn port of this driver
         _ADExternalTemplate(
             PORT=PORT, ADDR=0, P=P, R=R, NDARRAY_PORT=NDARRAY_PORT,
             NDARRAY_ADDR=NDARRAY_ADDR, TIMEOUT=TIMEOUT)
 
-        class _tmp(AutoSubstitution):
-            TemplateFile = 'ADExternal%s.template' % (CLASS_NAME,)
-            TrueName = '_ADExternal%s' % (CLASS_NAME,)
-            ModuleName = ADExternal.ModuleName
-
-        _tmp(PORT=PORT, ADDR=0, P=P, R=R, TIMEOUT=TIMEOUT)
 
     def InitialiseOnce(self):
         print("# ADExternalConfig(portName, socketPath, shmName, className, "
