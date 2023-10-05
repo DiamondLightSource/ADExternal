@@ -31,6 +31,8 @@ class Template(ADExternalPlugin):
             'sInt3Name': 'Mode (0 no copy, 1 copy, 2 do nothing)',
         }
         ADExternalPlugin.__init__(self, socket_path, params)
+        # advertise values to the server
+        self.update_params(params)
 
     def params_changed(self, new_params):
         # one of our input parameters has changed

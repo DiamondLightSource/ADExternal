@@ -43,6 +43,11 @@ class ADExternalPlugin(object):
         self._params[param] = value
         self._new_params[param] = value
 
+    # use a dictionary to update parameters
+    def update_params(self, params):
+        for key, val in params.items():
+            self[key] = val
+
     # see if param is supported
     def __contains__(self, param):
         return param in self._params
