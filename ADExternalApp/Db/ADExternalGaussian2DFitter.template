@@ -253,3 +253,20 @@ record(longout, "$(P)$(R)MinPixelLevel") {
     field(VAL, "$(MIN_PIXEL_LEVEL=10)")
     field(PINI, "YES")
 }
+
+record(bo, "$(P)$(R)Fit0Enabled") {
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iFit0Enabled")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(VAL, "$(FIT0ENABLED=0)")
+    field(PINI, "YES")
+}
+
+record(bi, "$(P)$(R)Fit0Enabled_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iFit0Enabled")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(SCAN, "I/O Intr")
+}

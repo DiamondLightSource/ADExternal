@@ -5,7 +5,7 @@ import logging
 import numpy
 
 from fit_lib import fit_lib
-from fit_lib.fit_lib import doFit2dGaussian, convert_abc
+from fit_lib.fit_lib import doFit2dGaussian, doFit2dGaussian_0, convert_abc
 from fit_lib.levmar import FitError
 
 from ADExternalPlugin import ADExternalPlugin
@@ -86,21 +86,29 @@ class Gaussian2DFitter(ADExternalPlugin):
                       iMaxPixelMax=254,
                       iMaxPixelMin=210,
                       dInitialStep=0.01,
-                      iMinPixelLevel=10
+                      iMinPixelLevel=10,
+                      iFit0Enabled=0
                       )
         self.auto_exposure = AutoExposureControl(
                 params['dInitialStep'], params['dMinExposure'],
                 params['dMaxExposure'])
+        self.fitting_function = doFit2dGaussian
         ADExternalPlugin.__init__(self, socket_path, params)
+        self.frame_counter = 0
+        self.last_exp_sp = 0
 
     def on_connected(self, params):
         init_step = params.get('dInitialStep', self['dInitialStep'])
         min_val = params.get('dMinExposure', self['dMinExposure'])
         max_val = params.get('dMaxExposure', self['dMaxExposure'])
+        fit0enabled = params.get('iFit0Enabled', self['iFit0Enabled'])
         self.auto_exposure.set_parameters(init_step, min_val, max_val)
+        self.fitting_function = \
+            doFit2dGaussian_0 if fit0enabled else doFit2dGaussian
 
     def params_changed(self, params):
-        for key in ('dInitialStep', 'dMinExposure', 'dMaxExposure'):
+        for key in ('dInitialStep', 'dMinExposure',
+                    'dMaxExposure', 'iFit0Enabled'):
             if key in params:
                 self.on_connected(params)
                 return
@@ -118,7 +126,7 @@ class Gaussian2DFitter(ADExternalPlugin):
 
     def do_fit(self, arr):
         try:
-            fit, error = doFit2dGaussian(
+            fit, error = self.fitting_function(
                 arr, thinning=(self["iFitThinning"], self["iFitThinning"]),
                 window_size=self["iFitWindowSize"], maxiter=self["iMaxiter"],
                 ROI=None, gamma=None, extra_data=False)
