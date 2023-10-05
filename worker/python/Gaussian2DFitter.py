@@ -1,4 +1,6 @@
 #!/dls_sw/prod/python3/RHEL7-x86_64/fit_lib/1.4/lightweight-venv/bin/python
+import argparse
+import logging
 
 import numpy
 
@@ -9,6 +11,14 @@ from fit_lib.levmar import FitError
 from ADExternalPlugin import ADExternalPlugin
 
 import scipy.ndimage
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'socket_path', help='Path to unix socket to talk to AD plugin')
+    parser.add_argument('--debug', action='store_true')
+    return parser.parse_args()
 
 
 def restrict(val, min_val, max_val):
@@ -52,7 +62,7 @@ class AutoExposureControl(object):
 class Gaussian2DFitter(ADExternalPlugin):
     tempCounter = 0
 
-    def __init__(self):
+    def __init__(self, socket_path):
         # default values if server doesn't send us updated ones
         params = dict(iPeakHeight=1,
                       iOriginX=2,
@@ -81,7 +91,7 @@ class Gaussian2DFitter(ADExternalPlugin):
         self.auto_exposure = AutoExposureControl(
                 params['dInitialStep'], params['dMinExposure'],
                 params['dMaxExposure'])
-        ADExternalPlugin.__init__(self, params)
+        ADExternalPlugin.__init__(self, socket_path, params)
 
     def on_connected(self, params):
         init_step = params.get('dInitialStep', self['dInitialStep'])
@@ -189,4 +199,8 @@ class Gaussian2DFitter(ADExternalPlugin):
 
 
 if __name__ == "__main__":
-    Gaussian2DFitter().run()
+    args = parse_args()
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+
+    Gaussian2DFitter(args.socket_path).run()

@@ -1,4 +1,7 @@
 #!/dls_sw/prod/python3/RHEL7-x86_64/pymalcolm/6.2/lightweight-venv/bin/python
+import argparse
+import logging
+
 from numpy import add
 
 from ADExternalPlugin import ADExternalPlugin
@@ -8,8 +11,17 @@ MODE_COPY = 1
 MODE_DONOTHING = 2
 
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'socket_path', help='Path to unix socket to talk to AD plugin')
+    parser.add_argument('--debug', action='store_true')
+    return parser.parse_args()
+
+
 class Template(ADExternalPlugin):
-    def __init__(self, dont_copy=True):
+    def __init__(self, socket_path):
+        # values used before getting updated ones from server
         params = {
             'iInt1': 100,
             'sInt1Name': 'Array offset',
@@ -18,8 +30,7 @@ class Template(ADExternalPlugin):
             'iInt3': 0,
             'sInt3Name': 'Mode (0 no copy, 1 copy, 2 do nothing)',
         }
-        ADExternalPlugin.__init__(self, params)
-        self.dont_copy = dont_copy
+        ADExternalPlugin.__init__(self, socket_path, params)
 
     def params_changed(self, new_params):
         # one of our input parameters has changed
@@ -45,4 +56,8 @@ class Template(ADExternalPlugin):
 
 
 if __name__ == '__main__':
-    Template().run()
+    args = parse_args()
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+
+    Template(args.socket_path).run()

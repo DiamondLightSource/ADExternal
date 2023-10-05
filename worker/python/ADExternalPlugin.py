@@ -23,22 +23,15 @@ PARAMS_FIELD = 'vars'
 ATTRS_FIELD = 'attrs'
 
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        'socket_path', help='Path to unix socket to talk to AD plugin')
-    parser.add_argument('--debug', action='store_true')
-    return parser.parse_args()
-
-
 class ADExternalPlugin(object):
     # init our param dict
-    def __init__(self, params={}):
+    def __init__(self, socket_path, initial_params={}):
         self.log = logging.getLogger(self.__class__.__name__)
-        self._params = dict(params)
+        self._params = dict(initial_params)
         self._new_params = {}
         self.want_quit = False
         self.sock = None
+        self.connect(socket_path)
 
     # get a param value
     def __getitem__(self, param):
@@ -94,12 +87,13 @@ class ADExternalPlugin(object):
         self.mem = mmap.mmap(fd, self.shm_size)
         self.mem_view = numpy.frombuffer(self.mem, 'uint8')
 
-    def _reconnect_socket(self, socket_path):
+    def connect(self, socket_path):
         if self.sock:
             self.sock.close()
 
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET, 0)
         self.sock.connect(socket_path)
+        self.socket_path = socket_path
 
     def _update_from_recved_params(self, params):
         if params:
@@ -131,11 +125,6 @@ class ADExternalPlugin(object):
             .reshape(self._convert_dims(dims))
 
     def run(self):
-        self.args = parse_args()
-        if self.args.debug:
-            logging.basicConfig(level=logging.DEBUG)
-
-        self._reconnect_socket(self.args.socket_path)
         self._send_msg({"class_name": self.__class__.__name__})
         msg = self._recv_msg()
 
