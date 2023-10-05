@@ -190,7 +190,9 @@ class Gaussian2DFitter(ADExternalPlugin):
             self["dAngle"], self["dError"]
         )
 
-        if self['iEnableAutoExposure']:
+        # 0 disabled, 1 enabled, > 1 means do each 'iEnableAutoExposure' frames
+        if self['iEnableAutoExposure'] \
+                and self.frame_counter % self['iEnableAutoExposure'] == 0:
             direction = 1 if max_pixel < self['iMaxPixelMin'] else \
                        -1 if max_pixel > self['iMaxPixelMax'] else \
                        0
@@ -199,9 +201,11 @@ class Gaussian2DFitter(ADExternalPlugin):
             self.log.debug(
                 'AutoExposure: max_pixel=%d, direction=%d, setpoint=%f',
                 max_pixel, direction, exp_sp)
-            if direction != 0:
+            if direction != 0 and self.last_exp_sp != exp_sp:
                 self['dExposureSp'] = exp_sp
+                self.last_exp_sp = exp_sp
 
+        self.frame_counter += 1
         # return the resultant array.
         return arr
 
