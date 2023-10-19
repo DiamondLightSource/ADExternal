@@ -79,7 +79,8 @@ ADExternalPlugin::ADExternalPlugin(
             return;
         }
         _global_shared_mem = shmem;
-        setADFrameMemoryFunctions(new_frame_malloc, new_frame_free);
+        NDArrayPool::setDefaultFrameMemoryFunctions(
+            new_frame_malloc, new_frame_free);
     }
     setStringParam(NDPluginDriverPluginType, "ADExternalPlugin");
     createParam("WORKERSNUM", asynParamInt32, &workersNumParam);
