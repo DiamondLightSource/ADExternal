@@ -1,0 +1,20 @@
+# % macro, P, Device Prefix
+# % macro, R, Device Suffix
+# % macro, PORT, Asyn Port name
+# % macro, TIMEOUT, Timeout
+# % macro, ADDR, Asyn Port address
+# % macro, MEDIAN_FILTER_SIZE, size used in median filter
+# % gui, $(PORT), edmtab, ADExternalMedianFilter.edl, P=$(P),R=$(R)
+
+record(longout, "$(P)$(R)MedianFilterSize") {
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iMedianFilterSize")
+    field(VAL, "$(MEDIAN_FILTER_SIZE=3)")
+    field(PINI, "YES")
+}
+
+record(longin, "$(P)$(R)MedianFilterSize_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iMedianFilterSize")
+    field(SCAN, "I/O Intr")
+}

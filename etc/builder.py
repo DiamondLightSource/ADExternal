@@ -4,6 +4,9 @@ from iocbuilder.modules.ADCore import \
     ADCore, includesTemplates, NDPluginBaseTemplate
 from iocbuilder.modules.asyn import AsynPort
 
+# worker type choices
+WORKER_TYPES = ['Template', 'Gaussian2DFitter', 'MedianFilter', 'AutoExposure']
+
 
 @includesTemplates(NDPluginBaseTemplate)
 class _ADExternalTemplate(AutoSubstitution):
@@ -11,11 +14,19 @@ class _ADExternalTemplate(AutoSubstitution):
 
 
 class TemplateTemplate(AutoSubstitution):
-        TemplateFile = 'ADExternalTemplate.template'
+    TemplateFile = 'ADExternalTemplate.template'
 
 
 class Gaussian2DFitterTemplate(AutoSubstitution):
-        TemplateFile = 'ADExternalGaussian2DFitter.template'
+    TemplateFile = 'ADExternalGaussian2DFitter.template'
+
+
+class MedianFilterTemplate(AutoSubstitution):
+    TemplateFile = 'ADExternalMedianFilter.template'
+
+
+class AutoExposureTemplate(AutoSubstitution):
+    TemplateFile = 'ADExternalAutoExposure.template'
 
 
 # Main device class
@@ -32,9 +43,6 @@ class ADExternal(AsynPort):
 
     # Is an Asyn device
     IsAsyn = True
-
-    # worker type choices
-    worker_type = ['Template', 'Gaussian2DFitter']
 
     def __init__(self, PORT, P, R, CLASS_NAME, NDARRAY_PORT, NDARRAY_ADDR=0,
                  SOCKET_PATH="/tmp/ext1.sock", SHM_NAME="shm1", QUEUE=5,
@@ -63,7 +71,7 @@ class ADExternal(AsynPort):
         PORT = Simple("Port name", str),
         P = Simple("PV prefix 1", str),
         R = Simple("PV prefix 2", str),
-        CLASS_NAME = Choice("Name of external plugin type", worker_type),
+        CLASS_NAME = Choice("Name of external plugin type", WORKER_TYPES),
         NDARRAY_PORT = Ident('Input array port', AsynPort),
         NDARRAY_ADDR = Simple('Input array port address', int),
         SOCKET_PATH = Simple("Path to unix socket", str),

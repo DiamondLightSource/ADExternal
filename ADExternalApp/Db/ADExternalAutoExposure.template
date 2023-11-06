@@ -1,0 +1,145 @@
+# % macro, P, Device Prefix
+# % macro, R, Device Suffix
+# % macro, PORT, Asyn Port name
+# % macro, TIMEOUT, Timeout
+# % macro, ADDR, Asyn Port address
+# % macro, ENABLE_AUTO_EXPOSURE, whether auto exposure is enabled by default
+# % macro, EXP_PV, Exposure PV to set
+# % macro, EXP_RBV_PV, Exposure PV to read value
+# % macro, MIN_EXP, Minimum exposure value that can be set (to adjust exposure)
+# % macro, MAX_EXP, Maximum exposure value that can be set (to adjust exposure)
+# % macro, MAX_PIXEL_MIN, Minimum value of maximum pixel (threshold to adjust exposure)
+# % macro, MAX_PIXEL_MAX, Maximum value of maximum pixel (threshold to adjust exposure)
+# % macro, INIT_STEP, Initial step (used to adjust exposure)
+# % gui, $(PORT), edmtab, ADExternalAutoExposure.edl, P=$(P),R=$(R)
+
+
+record(ao, "$(P)$(R)Exposure_RBV") {
+    field(DTYP, "asynFloat64")
+    field(OMSL, "closed_loop")
+    field(DOL, "$(EXP_RBV_PV=) CPP")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dExposure")
+    field(PINI, "YES")
+    field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)ExposureSp") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dExposureSp")
+    field(VAL, "0")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
+record(ao, "$(P)$(R)SetExposure") {
+    field(OMSL, "closed_loop")
+    field(DOL, "$(P)$(R)ExposureSp CPP")
+    field(OUT, "$(EXP_PV=) CPP")
+    field(PREC, "3")
+}
+
+record(longin, "$(P)$(R)MaxPixelMin_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iMaxPixelMin")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)MaxPixelMin") {
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iMaxPixelMin")
+    field(VAL, "$(MAX_PIXEL_MIN=210)")
+    field(PINI, "YES")
+}
+
+record(longin, "$(P)$(R)MaxPixelMax_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iMaxPixelMax")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)MaxPixelMax") {
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iMaxPixelMax")
+    field(VAL, "$(MAX_PIXEL_MAX=254)")
+    field(PINI, "YES")
+}
+
+record(bo, "$(P)$(R)EnableAutoExposure") {
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iEnableAutoExposure")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(VAL, "$(ENABLE_AUTO_EXPOSURE=0)")
+    field(PINI, "YES")
+}
+
+record(bi, "$(P)$(R)EnableAutoExposure_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iEnableAutoExposure")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)InitialStep_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dInitialStep")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)InitialStep") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dInitialStep")
+    field(VAL, "$(INIT_STEP=0.01)")
+    field(PINI, "YES")
+    field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)MinExposure_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dMinExposure")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
+record(ao, "$(P)$(R)MinExposure") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dMinExposure")
+    field(VAL, "$(MIN_EXP=0.01)")
+    field(PINI, "YES")
+    field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)MaxExposure_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dMaxExposure")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
+record(ao, "$(P)$(R)MaxExposure") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dMaxExposure")
+    field(VAL, "$(MAX_EXP=2.0)")
+    field(PINI, "YES")
+    field(PREC, "3")
+}
+
+record(ao, "$(P)$(R)AdjustPeriod") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dAdjustPeriod")
+    field(VAL, "$(ADJUST_PERIOD=4.0)")
+    field(PINI, "YES")
+}
+
+record(ai, "$(P)$(R)AdjustPeriod_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dAdjustPeriod")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxPixelValue_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iMaxPixelValue")
+    field(SCAN, "I/O Intr")
+}

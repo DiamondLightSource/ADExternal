@@ -1,4 +1,3 @@
-import argparse
 import ctypes
 import json
 import logging
@@ -32,6 +31,10 @@ class ADExternalPlugin(object):
         self.want_quit = False
         self.sock = None
         self.connect(socket_path)
+        self.post_process_hook = None
+
+    def set_post_process_hook(self, func):
+        self.post_process_hook = func
 
     # get a param value
     def __getitem__(self, param):
@@ -43,7 +46,6 @@ class ADExternalPlugin(object):
         self._params[param] = value
         self._new_params[param] = value
 
-    # use a dictionary to update parameters
     def update_params(self, params):
         for key, val in params.items():
             self[key] = val
@@ -148,12 +150,13 @@ class ADExternalPlugin(object):
         self.on_connected(server_params)
 
         while not self.want_quit:
-            msg = self._recv_msg()
-            self._update_from_recved_params(msg.get(PARAMS_FIELD, {}))
-            frame_offset = msg.get('frame_loc')
+            in_msg = self._recv_msg()
+            self._update_from_recved_params(in_msg.get(PARAMS_FIELD, {}))
+            frame_offset = in_msg.get('frame_loc')
             if frame_offset is not None:
                 arr = self._get_array_from_shared_memory(
-                    frame_offset, msg.get('frame_dims'), msg.get('data_type'))
+                    frame_offset, in_msg.get('frame_dims'),
+                    in_msg.get('data_type'))
                 old_arr_shape = arr.shape
                 old_arr_dtype = arr.dtype.name
                 old_arr_nbytes = arr.nbytes
@@ -167,10 +170,10 @@ class ADExternalPlugin(object):
                 if new_arr is None:
                     # we didn't produce any frame but parameter might have
                     # been updated
-                    self._send_msg({
+                    out_msg = {
                         'push_frame': False,
                         PARAMS_FIELD: self._new_params
-                    })
+                    }
                 else:
                     if new_arr.ctypes.data != old_arr_data:
                         nbytes = min(old_arr_nbytes, new_arr.nbytes)
@@ -195,6 +198,8 @@ class ADExternalPlugin(object):
                     if old_arr_dtype != new_arr.dtype.name:
                         out_msg['data_type'] = new_arr.dtype.name
 
-                    self._send_msg(out_msg)
+                if self.post_process_hook:
+                    self.post_process_hook(arr, attrs, in_msg, out_msg)
 
+                self._send_msg(out_msg)
                 self._new_params = {}
