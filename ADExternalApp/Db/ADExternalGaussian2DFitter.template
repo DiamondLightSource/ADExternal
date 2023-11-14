@@ -16,6 +16,7 @@ record(longout, "$(P)$(R)FitWindowSize") {
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iFitWindowSize")
     field(VAL, "3")
     field(PINI, "YES")
+    info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)FitThinning_RBV") {
@@ -29,6 +30,7 @@ record(longout, "$(P)$(R)FitThinning") {
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iFitThinning")
     field(VAL, "5")
     field(PINI, "YES")
+    info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)Maxiter_RBV") {
@@ -42,6 +44,7 @@ record(longout, "$(P)$(R)Maxiter") {
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iMaxiter")
     field(VAL, "20")
     field(PINI, "YES")
+    info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)PeakHeight_RBV") {
@@ -116,6 +119,7 @@ record(bo, "$(P)$(R)Fit0Enabled") {
     field(ONAM, "ON")
     field(VAL, "$(FIT0ENABLED=0)")
     field(PINI, "YES")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)Fit0Enabled_RBV") {
@@ -137,4 +141,5 @@ record(ao, "$(P)$(R)MinPixelLevel") {
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dMinPixelLevel")
     field(VAL, "$(MIN_PIXEL_LEVEL=10.0)")
     field(PINI, "YES")
+    info(autosaveFields, "VAL")
 }

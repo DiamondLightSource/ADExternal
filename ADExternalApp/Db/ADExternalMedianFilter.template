@@ -11,6 +11,7 @@ record(longout, "$(P)$(R)MedianFilterSize") {
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iMedianFilterSize")
     field(VAL, "$(MEDIAN_FILTER_SIZE=3)")
     field(PINI, "YES")
+    info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)MedianFilterSize_RBV") {

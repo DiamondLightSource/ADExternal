@@ -49,6 +49,7 @@ record(longout, "$(P)$(R)MaxPixelMin") {
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iMaxPixelMin")
     field(VAL, "$(MAX_PIXEL_MIN=210)")
     field(PINI, "YES")
+    info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)MaxPixelMax_RBV") {
@@ -62,6 +63,7 @@ record(longout, "$(P)$(R)MaxPixelMax") {
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))iMaxPixelMax")
     field(VAL, "$(MAX_PIXEL_MAX=254)")
     field(PINI, "YES")
+    info(autosaveFields, "VAL")
 }
 
 record(bo, "$(P)$(R)EnableAutoExposure") {
@@ -71,6 +73,7 @@ record(bo, "$(P)$(R)EnableAutoExposure") {
     field(ONAM, "ON")
     field(VAL, "$(ENABLE_AUTO_EXPOSURE=0)")
     field(PINI, "YES")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)EnableAutoExposure_RBV") {
@@ -93,6 +96,7 @@ record(ao, "$(P)$(R)InitialStep") {
     field(VAL, "$(INIT_STEP=0.01)")
     field(PINI, "YES")
     field(PREC, "3")
+    info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)MinExposure_RBV") {
@@ -108,6 +112,7 @@ record(ao, "$(P)$(R)MinExposure") {
     field(VAL, "$(MIN_EXP=0.01)")
     field(PINI, "YES")
     field(PREC, "3")
+    info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)MaxExposure_RBV") {
@@ -123,6 +128,7 @@ record(ao, "$(P)$(R)MaxExposure") {
     field(VAL, "$(MAX_EXP=2.0)")
     field(PINI, "YES")
     field(PREC, "3")
+    info(autosaveFields, "VAL")
 }
 
 record(ao, "$(P)$(R)AdjustPeriod") {
@@ -130,6 +136,7 @@ record(ao, "$(P)$(R)AdjustPeriod") {
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dAdjustPeriod")
     field(VAL, "$(ADJUST_PERIOD=4.0)")
     field(PINI, "YES")
+    info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)AdjustPeriod_RBV") {
