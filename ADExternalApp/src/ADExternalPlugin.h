@@ -13,6 +13,7 @@
 #define DOUBLE_PAR_LETTER 'd'
 #define STRING_PAR_LETTER 's'
 
+#define MAX_MSG_SIZE 4096
 
 // Max number of user parameters in a subclass
 #define NUSERPARAMS 100
@@ -138,10 +139,12 @@ private:
     int nextParam;
 
     epicsMutexId workersMutex;
- 
+
     epicsEventId hasWorker;
 
     std::set<struct worker_context *> workers;
+
+    char msgBuffer[MAX_MSG_SIZE];
 };
 
 void endProcessingThread(void* plugin);

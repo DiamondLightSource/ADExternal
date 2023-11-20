@@ -28,7 +28,6 @@ class ADExternalPlugin(object):
         self.log = logging.getLogger(self.__class__.__name__)
         self._params = dict(initial_params)
         self._new_params = {}
-        self.want_quit = False
         self.sock = None
         self.connect(socket_path)
         self.post_process_hook = None
@@ -77,14 +76,17 @@ class ADExternalPlugin(object):
         pass
 
     def _send_msg(self, msg):
+        self.log.debug('Sending message: %s', msg)
         data = json.dumps(msg).encode()
-        self.log.debug('Sending message: %s', data)
         self.sock.send(data)
 
     def _recv_msg(self):
-        msg = json.loads(self.sock.recv(MAX_RECV_LEN))
-        self.log.debug('Received message: %s', msg)
-        return msg
+        data = self.sock.recv(MAX_RECV_LEN)
+        self.log.debug('Received raw message: %s', repr(data))
+        if data == b'':
+            return None
+
+        return json.loads(data)
 
     def _mmap_shared_memory(self, shm_name):
         self.shm_name = shm_name
@@ -135,6 +137,10 @@ class ADExternalPlugin(object):
         self._send_msg({"class_name": self.__class__.__name__})
         msg = self._recv_msg()
 
+        if msg is None:
+            self.log.error('Connection was closed before handshake completion')
+            return
+
         if not msg.get('ok'):
             self.log.error('Failed during handshake: %s', msg.get('err'))
             return
@@ -149,8 +155,12 @@ class ADExternalPlugin(object):
 
         self.on_connected(server_params)
 
-        while not self.want_quit:
+        while True:
             in_msg = self._recv_msg()
+            if in_msg is None:
+                self.log.debug('We were disconnected from server')
+                break
+
             self._update_from_recved_params(in_msg.get(PARAMS_FIELD, {}))
             frame_offset = in_msg.get('frame_loc')
             if frame_offset is not None:

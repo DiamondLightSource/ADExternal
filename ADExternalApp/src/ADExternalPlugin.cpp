@@ -12,7 +12,6 @@
 #include "ADExternalPlugin.h"
 
 
-#define MAX_MSG_SIZE 4096
 #define SERVER_POLL_TIMEOUT_MS 1000
 
 
@@ -222,7 +221,6 @@ void ADExternalPlugin::_process_worker_message(
 
 void ADExternalPlugin::_handle_server_events()
 {
-    static char buffer[MAX_MSG_SIZE];
     for (;;) {
         ssize_t rc;
         struct server_connection_event event = server_pop_event(server);
@@ -236,13 +234,15 @@ void ADExternalPlugin::_handle_server_events()
                 _initialise_new_connection(event.connection);
                 break;
             case SCONNECTION_EVENT_IN:
-                rc = read(sock, buffer, sizeof(buffer));
+                rc = read(sock, this->msgBuffer, MAX_MSG_SIZE);
                 if (rc > 0) {
-                    buffer[rc] = 0;
+                    msgBuffer[rc] = 0;
                     rapidjson::Document doc;
-                    doc.ParseInsitu(buffer);
+                    doc.ParseInsitu(this->msgBuffer);
                     if (doc.HasParseError() || !doc.IsObject()) {
                         ASYN_ERROR("%s: Error parsing message\n", driverName);
+                        // gibberish! we can't rely on this worker anymore
+                        server_connection_close(event.connection);
                     } else {
                         struct worker_context *worker =
                             (struct worker_context *)
