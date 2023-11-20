@@ -303,10 +303,8 @@ asynStatus ADExternalPlugin::drvUserCreate(
     return NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
 }
 
-/** Callback function that is called by the NDArray driver with new NDArray data
-  * Calls the relevant user python code, stamps any outgoing array with
-  * attributes from the code, then updates the internal param list from the user
-  * param dict before returning any outgoing numpy array as an NDArray.
+/** Callback function that is called by the NDArray driver with new NDArray data.
+  * It notifies an available worker to start processing the frame.
   * \param[in] pArray  The NDArray from the callback.
   *
   * Called with this->lock taken
@@ -321,9 +319,8 @@ void ADExternalPlugin::processCallbacks(NDArray *pArray)
 
 
 /** Called when asyn clients call pasynInt32->write().
-  * This function does a write of a user parameter to the param list, then
-  * updates the user param dict to match. It also reloads the user python lib
-  * if requested.
+  * If the parameter is used by the workers, it notifies all the workers about
+  * the new value.
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Value to write.
   *
@@ -344,8 +341,8 @@ asynStatus ADExternalPlugin::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 }
 
 /** Called when asyn clients call pasynFloat64->write().
-  * This function does a write of a user parameter to the param list, then
-  * updates the user param dict to match.
+  * If the parameter is used by the workers, it notifies all the workers about
+  * the new value.
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Value to write.
   *
@@ -369,8 +366,8 @@ asynStatus ADExternalPlugin::writeFloat64(
 }
 
 /** Called when asyn clients call pasynOctet->write().
-  * This function does a write of a user parameter to the param list, then
-  * updates the user param dict to match.
+  * If the parameter is used by the workers, it notifies all the workers about
+  * the new value.
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Address of the string to write.
   * \param[in] maxChars Max number of characters to write.
