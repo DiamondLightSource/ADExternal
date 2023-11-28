@@ -29,6 +29,7 @@ record(ai, "$(P)$(R)ExposureSp") {
     field(VAL, "0")
     field(SCAN, "I/O Intr")
     field(PREC, "3")
+    info(autosaveFields, "VAL")
 }
 
 record(ao, "$(P)$(R)SetExposure") {

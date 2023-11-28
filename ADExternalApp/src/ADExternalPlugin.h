@@ -135,15 +135,10 @@ private:
     asynStatus interpretReturn(void *pValue);
 
     NDAttributeList *pFileAttributes;
-
     int nextParam;
-
-    epicsMutexId workersMutex;
-
-    epicsEventId hasWorker;
-
+    pthread_mutex_t workersMutex;
+    pthread_cond_t hasWorkerCond;
     std::set<struct worker_context *> workers;
-
     char msgBuffer[MAX_MSG_SIZE];
 };
 

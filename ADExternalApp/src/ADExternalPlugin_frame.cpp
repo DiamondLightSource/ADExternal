@@ -4,7 +4,6 @@
 
 #include <epicsTime.h>
 #include <epicsExit.h>
-#include <epicsEvent.h>
 
 #include "utils.h"
 
@@ -54,8 +53,8 @@ bool ADExternalPlugin::_send_frame(NDArray *pArray)
         return false;
     }
     bool got_worker = false;
+    pthread_mutex_lock(&workersMutex);
     for (;;) {
-        epicsMutexLock(workersMutex);
         for (struct worker_context *worker : this->workers) {
             if (!worker->frame) {
                 pArray->reserve();
@@ -65,11 +64,11 @@ bool ADExternalPlugin::_send_frame(NDArray *pArray)
                 break;
             }
         }
-        epicsMutexUnlock(workersMutex);
         if (got_worker)
             break;
-        epicsEventWait(hasWorker);
+        pthread_cond_wait(&hasWorkerCond, &workersMutex);
     }
+    pthread_mutex_unlock(&workersMutex);
     return got_worker;
 }
 

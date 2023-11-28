@@ -4,7 +4,6 @@
 
 #include <epicsTime.h>
 #include <epicsExit.h>
-#include <epicsEvent.h>
 
 #include "ADExternalPlugin.h"
 
@@ -21,16 +20,18 @@ void ADExternalPlugin::_process_handshake_worker_message(
         server_connection_close(worker->con);
         return;
     }
+    int nWorkers = 0;
     _send_handshake_ok(worker);
-    epicsMutexLock(workersMutex);
+    pthread_mutex_lock(&workersMutex);
     worker->state = WORKER_WORKING;
     workers.insert(worker);
-    epicsMutexUnlock(workersMutex);
+    nWorkers = workers.size();
+    pthread_cond_signal(&hasWorkerCond);
+    pthread_mutex_unlock(&workersMutex);
     this->lock();
-    setIntegerParam(workersNumParam, workers.size());
-    callParamCallbacks();
+    setIntegerParam(workersNumParam, nWorkers);
     this->unlock();
-    epicsEventSignal(hasWorker);
+    callParamCallbacks();
 }
 
 
@@ -45,14 +46,12 @@ void ADExternalPlugin::_send_handshake_ok(struct worker_context *worker)
     writer.String(shmName.c_str());
     _populate_vars_in_json(writer);
     writer.EndObject();
-    epicsMutexLock(workersMutex);
     ssize_t rc;
     if((rc=write(worker->sock,
              string_buffer.GetString(),
              string_buffer.GetSize())) < 0) {
         ASYN_ERROR("%s: unix socket write error %ld\n", driverName, rc);
     }
-    epicsMutexUnlock(workersMutex);
 }
 
 
@@ -67,12 +66,10 @@ void ADExternalPlugin::_send_handshake_not_ok(
     writer.String("err");
     writer.String(msg);
     writer.EndObject();
-    epicsMutexLock(workersMutex);
     ssize_t rc;
     if((rc=write(worker->sock,
              string_buffer.GetString(),
              string_buffer.GetSize())) < 0) {
         ASYN_ERROR("%s: unix socket write error %ld\n", driverName, rc);
     }
-    epicsMutexUnlock(workersMutex);
 }

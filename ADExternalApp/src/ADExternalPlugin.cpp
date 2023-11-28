@@ -4,7 +4,6 @@
 
 #include <epicsTime.h>
 #include <epicsExit.h>
-#include <epicsEvent.h>
 
 #include "server.h"
 #include "utils.h"
@@ -89,8 +88,8 @@ ADExternalPlugin::ADExternalPlugin(
     setStringParam(classNameParam, className);
     setDoubleParam(procTimeParam, 0.0);
     callParamCallbacks();
-    workersMutex = epicsMutexMustCreate();
-    hasWorker = epicsEventMustCreate(epicsEventEmpty);
+    pthread_mutex_init(&workersMutex, NULL);
+    pthread_cond_init(&hasWorkerCond, NULL);
     epicsThreadCreate(
         "comthread", epicsThreadPriorityMedium,
         epicsThreadGetStackSize(epicsThreadStackMedium), _com_task, this);
@@ -128,9 +127,9 @@ void ADExternalPlugin::_destroy_connection(struct server_connection *con)
     struct worker_context *context =
         (struct worker_context *) server_connection_get_private(con);
     int droppedArrays;
-    epicsMutexLock(workersMutex);
+    pthread_mutex_lock(&workersMutex);
     workers.erase(context);
-    epicsMutexUnlock(workersMutex);
+    pthread_mutex_unlock(&workersMutex);
     this->lock();
     setIntegerParam(workersNumParam, workers.size());
     if (context->frame) {
@@ -187,7 +186,6 @@ void ADExternalPlugin::_process_working_worker_message(
     if (pArray)
         pArray->release();
 
-    worker->frame = NULL;
     epicsTimeStamp ts_end;
     epicsTimeGetCurrent(&ts_end);
     this->lock();
@@ -196,7 +194,10 @@ void ADExternalPlugin::_process_working_worker_message(
         epicsTimeDiffInSeconds(&ts_end, &worker->ts_start) * 1000);
     callParamCallbacks();
     this->unlock();
-    epicsEventSignal(hasWorker);
+    pthread_mutex_lock(&workersMutex);
+    worker->frame = NULL;
+    pthread_cond_signal(&hasWorkerCond);
+    pthread_mutex_unlock(&workersMutex);
 }
 
 
@@ -395,7 +396,7 @@ asynStatus ADExternalPlugin::writeOctet(asynUser *pasynUser, const char *value,
 
 void ADExternalPlugin::_broadcast_workers(const char *data, size_t nbytes)
 {
-    epicsMutexLock(workersMutex);
+    pthread_mutex_lock(&workersMutex);
     for (struct worker_context *worker : this->workers) {
         if (worker->state == WORKER_WORKING) {
             ssize_t rc;
@@ -404,5 +405,5 @@ void ADExternalPlugin::_broadcast_workers(const char *data, size_t nbytes)
                     driverName, rc);
         }
     }
-    epicsMutexUnlock(workersMutex);
+    pthread_mutex_unlock(&workersMutex);
 }
