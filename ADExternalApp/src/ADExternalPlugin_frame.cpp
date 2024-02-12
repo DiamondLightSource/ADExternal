@@ -34,6 +34,10 @@ bool ADExternalPlugin::_send_frame_to_worker(
     writer.Uint64((uint64_t) pArray->pData - (uint64_t) shmem->addr);
     writer.String("ts");
     writer.Double((double) pArray->timeStamp);
+    uint64_t epics_ts_in_nsec =
+        pArray->epicsTS.secPastEpoch * 1000000000ul + pArray->epicsTS.nsec;
+    writer.String("epics_ts");
+    writer.Uint64(epics_ts_in_nsec);
     writer.EndObject();
     ssize_t rc;
     if((rc=write(worker->sock,
