@@ -20,8 +20,7 @@ overhead
 - There can be more than one worker to process in parallel
 
 ## Limitations
-- This plugin makes ADCore use shared memory for frame allocation and therefore,
- it requires a version of ADCore that allows doing that.
+- ADCore version 3-13 or newer is required.
 - There can only be one shared memory per IOC (given that it is used for every
   frame allocation), if there are multiple ADExternal instances, only the first
   instance will create the shared memory and the rest will use the same one,
