@@ -7,7 +7,7 @@
 
 include "NDPluginBase.template"
 
-record(stringin, "$(P)$(R)ExtName")
+record(stringin, "$(P)$(R)ClassName")
 {
   field(DESC, "Name of external plugin required")
   field(DTYP, "asynOctetRead")

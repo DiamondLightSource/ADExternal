@@ -85,7 +85,7 @@ x 120
 y 25
 w 100
 h 20
-controlPv "$(P)$(R)ExtName"
+controlPv "$(P)$(R)ClassName"
 font "helvetica-medium-r-10.0"
 fgColor index 16
 bgColor index 10
