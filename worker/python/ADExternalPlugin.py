@@ -24,12 +24,11 @@ ATTRS_FIELD = 'attrs'
 
 class ADExternalPlugin(object):
     # init our param dict
-    def __init__(self, socket_path, initial_params={}):
+    def __init__(self, socket_path, initial_params=None):
         self.log = logging.getLogger(self.__class__.__name__)
-        self._params = dict(initial_params)
+        self.socket_path = socket_path
+        self._params = {} if initial_params is None else dict(initial_params)
         self._new_params = {}
-        self.sock = None
-        self.connect(socket_path)
         self.post_process_hook = None
 
     def set_post_process_hook(self, func):
@@ -41,7 +40,7 @@ class ADExternalPlugin(object):
 
     # set a param value
     def __setitem__(self, param, value):
-        assert param in self, "Param %s not in param lib" % param
+        assert param in self, 'Param %s not in param lib' % param
         self._params[param] = value
         self._new_params[param] = value
 
@@ -66,14 +65,19 @@ class ADExternalPlugin(object):
         return iter(self._params)
 
     # default paramChanged does nothing
-    def params_changed(self, new_params):
+    def params_changed(self, params):
         pass
 
-    def process_array(self, arr, attr={}):
+    def process_array(self, arr, attrs):
         return arr
 
     def on_connected(self, server_params={}):
         pass
+
+    def pop_new_params(self):
+        new_params = self._new_params
+        self._new_params = {}
+        return new_params
 
     def _send_msg(self, msg):
         self.log.debug('Sending message: %s', msg)
@@ -109,7 +113,7 @@ class ADExternalPlugin(object):
             self._params.update(params)
             self.params_changed(params)
 
-    def _offset_inside_shmem(self, offset):
+    def _is_offset_inside_shmem(self, offset):
         return offset >= 0 and offset < self.shm_size
 
     @staticmethod
@@ -123,8 +127,8 @@ class ADExternalPlugin(object):
         nelem = prod(dims)
         nbytes = nelem * dt.itemsize
         stop_offset = offset + nbytes
-        if not self._offset_inside_shmem(offset) or not \
-                self._offset_inside_shmem(stop_offset - 1):
+        if not self._is_offset_inside_shmem(offset) or not \
+                self._is_offset_inside_shmem(stop_offset - 1):
             raise ValueError(
                 'Outside of shared memory Offset=%d dims=%s dtype=%s' %
                 (offset,  str(dims), dtype_name))
@@ -134,7 +138,10 @@ class ADExternalPlugin(object):
             .reshape(self._convert_dims(dims))
 
     def run(self):
-        self._send_msg({"class_name": self.__class__.__name__})
+        self.sock = None
+        self.connect(self.socket_path)
+        name = getattr(self, 'name', self.__class__.__name__)
+        self._send_msg({'class_name': name})
         msg = self._recv_msg()
 
         if msg is None:
@@ -149,9 +156,10 @@ class ADExternalPlugin(object):
         self._update_from_recved_params(server_params)
         self._mmap_shared_memory(msg['shm_name'])
 
+        new_params = self.pop_new_params()
+
         # make sure they receive parameters value forced by us
-        self._send_msg({PARAMS_FIELD: self._new_params})
-        self._new_params = {}
+        self._send_msg({PARAMS_FIELD: new_params})
 
         self.on_connected(server_params)
 
@@ -177,12 +185,13 @@ class ADExternalPlugin(object):
 
                 new_arr = self.process_array(arr, attrs)
 
+                new_params = self.pop_new_params()
                 if new_arr is None:
                     # we didn't produce any frame but parameter might have
                     # been updated
                     out_msg = {
                         'push_frame': False,
-                        PARAMS_FIELD: self._new_params
+                        PARAMS_FIELD: new_params
                     }
                 else:
                     if new_arr.ctypes.data != old_arr_data:
@@ -198,7 +207,7 @@ class ADExternalPlugin(object):
 
                     out_msg = {
                         'push_frame': True,
-                        PARAMS_FIELD: self._new_params,
+                        PARAMS_FIELD: new_params,
                         ATTRS_FIELD: attrs
                     }
                     if old_arr_shape != new_arr.shape:
@@ -209,7 +218,6 @@ class ADExternalPlugin(object):
                         out_msg['data_type'] = new_arr.dtype.name
 
                 if self.post_process_hook:
-                    self.post_process_hook(arr, attrs, in_msg, out_msg)
+                    self.post_process_hook(arr, in_msg, out_msg)
 
                 self._send_msg(out_msg)
-                self._new_params = {}

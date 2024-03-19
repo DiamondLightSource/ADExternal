@@ -39,7 +39,7 @@ class Template(ADExternalPlugin):
         # just log it for now, do nothing.
         self.log.debug("Parameter has been changed %s", new_params)
 
-    def process_array(self, arr, attr={}):
+    def process_array(self, arr, attr):
         if self['iInt3'] == MODE_DONOTHING:
             return arr
 

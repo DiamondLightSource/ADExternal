@@ -84,7 +84,7 @@ class AutoExposure(ADExternalPlugin):
                 self.on_connected(params)
                 return
 
-    def process_array(self, arr, attr={}):
+    def process_array(self, arr, attr):
         max_pixel = arr.max()
         self['iMaxPixelValue'] = int(max_pixel)
         # 0 disabled, 1 enabled

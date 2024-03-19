@@ -22,7 +22,7 @@ class MedianFilter(ADExternalPlugin):
         params = dict(iMedianFilterSize=0)
         ADExternalPlugin.__init__(self, socket_path, params)
 
-    def process_array(self, arr, attr={}):
+    def process_array(self, arr, attr):
         if self['iMedianFilterSize']:
             return scipy.ndimage.median_filter(
                 arr, size=self['iMedianFilterSize'])

@@ -94,11 +94,11 @@ class Gaussian2DFitter(ADExternalPlugin):
             self['iFitType'] = -1
             self.reset_results()
         except Exception as e:
-            self['sFitStatus'] = 'error: %s' % (e,)
+            self['sFitStatus'] = 'Unexpected error: %s' % (e,)
             self['iFitType'] = -1
             self.reset_results()
 
-    def process_array(self, arr, attr={}):
+    def process_array(self, arr, attr):
         # Convert the array to a float so that we do not overflow during
         # processing.
         arr2 = numpy.float_(arr)
@@ -107,7 +107,7 @@ class Gaussian2DFitter(ADExternalPlugin):
         if max_pixel_val >= self['dMinPixelLevel']:
             self.do_fit(arr2)
         else:
-            self['sFitStatus'] = 'error: image too dim'
+            self['sFitStatus'] = 'Error: image too dim'
             self['iFitType'] = -1
             self.reset_results()
 
