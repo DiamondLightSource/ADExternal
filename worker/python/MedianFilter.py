@@ -1,4 +1,5 @@
-#!/dls_sw/prod/python3/RHEL7-x86_64/fit_lib/1.4/lightweight-venv/bin/python
+#!/usr/bin/env python
+
 import argparse
 import logging
 

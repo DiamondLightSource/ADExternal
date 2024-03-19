@@ -12,10 +12,10 @@ top_dir = os.path.dirname(etc_dir)
 # worker type choices
 WORKER_TYPES = ['Template', 'Gaussian2DFitter', 'MedianFilter', 'AutoExposure']
 START_WORKER_SCRIPT = """#!/usr/bin/env bash
-{worker_path} {socket_path}
+{python} {worker_path} {socket_path}
 """
 START_ZMQWORKER_SCRIPT = """#!/usr/bin/env bash
-{worker_path} {options} {socket_path} {class_name} {endpoint}
+{python} {worker_path} {options} {socket_path} {class_name} {endpoint}
 """
 START_ALL_WORKERS_SCRIPT = """#!/usr/bin/env bash
 DIR=$(dirname "$0")
@@ -77,7 +77,7 @@ class ADExternal(AsynPort):
 
     def __init__(self, PORT, P, R, CLASS_NAME, NDARRAY_PORT,
                  NDARRAY_ADDR=0, IDENTITY="", SOCKET_PATH="/tmp/ext1.sock",
-                 SHM_NAME="", QUEUE=5, BLOCK=1, MEMORY=0, PRIORITY=0,
+                 SHM_NAME="", PYTHON="", QUEUE=5, BLOCK=1, MEMORY=0, PRIORITY=0,
                  STACKSIZE=0, TIMEOUT=1, **args):
         self.__super.__init__(PORT)
         self.__dict__.update(locals())
@@ -93,7 +93,8 @@ class ADExternal(AsynPort):
             'worker_{}_{}.sh'.format(self.CLASS_NAME, sock_name), 0555)
         worker_path = "{}/worker/python/{}.py".format(top_dir, self.CLASS_NAME)
         self.startWorkerScript.write(START_WORKER_SCRIPT.format(
-            worker_path=worker_path, socket_path=self.SOCKET_PATH))
+            python=self.PYTHON, worker_path=worker_path,
+            socket_path=self.SOCKET_PATH))
 
     def tryCreatingStartAllWorkersScript(self):
         # If the file was already there, we ignore the assertion error
@@ -130,6 +131,7 @@ class ADExternal(AsynPort):
         NDARRAY_ADDR = Simple('Input array port address', int),
         SOCKET_PATH = Simple("Path to unix socket", str),
         SHM_NAME = Simple("Shared memory name", str),
+        PYTHON = Simple("Path to python used to run the workers", str),
         QUEUE = Simple('Input array queue size', int),
         BLOCK = Simple('Blocking callbacks?', int),
         MEMORY = Simple("Memory", int),
@@ -144,14 +146,14 @@ class ADExternal(AsynPort):
 class ADExternalZmqForwarder(ADExternal):
     def __init__(self, PORT, P, R, ENDPOINT, CLASS_NAME, NDARRAY_PORT,
                  SEND_DATA=False, NDARRAY_ADDR=0, IDENTITY="",
-                 SOCKET_PATH="/tmp/ext1.sock", SHM_NAME="", QUEUE=5, BLOCK=1,
-                 MEMORY=0, PRIORITY=0, STACKSIZE=0, TIMEOUT=1, **args):
+                 SOCKET_PATH="/tmp/ext1.sock", SHM_NAME="", PYTHON="", QUEUE=5,
+                 BLOCK=1, MEMORY=0, PRIORITY=0, STACKSIZE=0, TIMEOUT=1, **args):
         self.ENDPOINT = ENDPOINT
         self.SEND_DATA = SEND_DATA
         ADExternal.__init__(self, PORT, P, R, CLASS_NAME,
                             NDARRAY_PORT, NDARRAY_ADDR, IDENTITY, SOCKET_PATH,
-                            SHM_NAME, QUEUE, BLOCK, MEMORY, PRIORITY, STACKSIZE,
-                            TIMEOUT, **args)
+                            SHM_NAME, PYTHON, QUEUE, BLOCK, MEMORY, PRIORITY,
+                            STACKSIZE, TIMEOUT, **args)
 
 
     def createWorkerScript(self):
@@ -161,9 +163,9 @@ class ADExternalZmqForwarder(ADExternal):
         worker_path = '{}/worker/python/ZmqForwarder.py'.format(top_dir)
         options = '' if not self.SEND_DATA else '--with_frame_data'
         self.startWorkerScript.write(START_ZMQWORKER_SCRIPT.format(
-            worker_path=worker_path, socket_path=self.SOCKET_PATH,
-            class_name=self.CLASS_NAME, endpoint=self.ENDPOINT,
-            options=options))
+            python=self.PYTHON, worker_path=worker_path,
+            socket_path=self.SOCKET_PATH, class_name=self.CLASS_NAME,
+            endpoint=self.ENDPOINT, options=options))
 
     ArgInfo = makeArgInfo(__init__,
         PORT = Simple("Port name", str),
@@ -177,6 +179,7 @@ class ADExternalZmqForwarder(ADExternal):
         NDARRAY_ADDR = Simple('Input array port address', int),
         SOCKET_PATH = Simple("Path to unix socket", str),
         SHM_NAME = Simple("Shared memory name", str),
+        PYTHON = Simple("Path to python used to run the workers", str),
         QUEUE = Simple('Input array queue size', int),
         BLOCK = Simple('Blocking callbacks?', int),
         MEMORY = Simple("Memory", int),
