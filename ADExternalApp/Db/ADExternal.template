@@ -32,3 +32,12 @@ record(ai, "$(P)$(R)ProcTime")
   field(SCAN, "I/O Intr")
   field(PREC, "3")
 }
+
+record(stringin, "$(P)$(R)Identity")
+{
+  field(DESC, "Source identity")
+  field(DTYP, "asynOctetRead")
+  field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT=1))IDENTITY")
+  field(SCAN, "I/O Intr")
+  field(PINI, "YES")
+}

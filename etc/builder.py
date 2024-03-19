@@ -72,9 +72,10 @@ class ADExternal(AsynPort):
     # Is an Asyn device
     IsAsyn = True
 
-    def __init__(self, PORT, P, R, CLASS_NAME, NDARRAY_PORT, NDARRAY_ADDR=0,
-                 SOCKET_PATH="/tmp/ext1.sock", SHM_NAME="", QUEUE=5,
-                 BLOCK=1, MEMORY=0, PRIORITY=0, STACKSIZE=0, TIMEOUT=1, **args):
+    def __init__(self, PORT, P, R, CLASS_NAME, NDARRAY_PORT,
+                 NDARRAY_ADDR=0, IDENTITY="", SOCKET_PATH="/tmp/ext1.sock",
+                 SHM_NAME="", QUEUE=5, BLOCK=1, MEMORY=0, PRIORITY=0,
+                 STACKSIZE=0, TIMEOUT=1, **args):
 
         sock_name = os.path.splitext(os.path.basename(SOCKET_PATH))[0]
         if SHM_NAME == "":
@@ -101,22 +102,25 @@ class ADExternal(AsynPort):
             pass
 
     def InitialiseOnce(self):
+
         print("# ADExternalConfig(portName, socketPath, shmName, className, "
-              "queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, "
-              "maxMemory, priority, stackSize)")
+              "identity, queueSize, blockingCallbacks, NDArrayPort, "
+              "NDArrayAddr, maxMemory, priority, stackSize)")
 
     def Initialise(self):
         print(
             "ADExternalConfig(\"{PORT}\", \"{SOCKET_PATH}\", \"{SHM_NAME}\", "
-             "\"{CLASS_NAME}\", {QUEUE}, {BLOCK}, \"{NDARRAY_PORT}\", "
-            "{NDARRAY_ADDR}, {MEMORY}, {PRIORITY}, {STACKSIZE})".format(
-                **self.__dict__))
+             "\"{CLASS_NAME}\", \"{IDENTITY}\", {QUEUE}, {BLOCK}, "
+             "\"{NDARRAY_PORT}\", " "{NDARRAY_ADDR}, {MEMORY}, {PRIORITY}, "
+             "{STACKSIZE})".format(**self.__dict__))
+
 
     ArgInfo = makeArgInfo(__init__,
         PORT = Simple("Port name", str),
         P = Simple("PV prefix 1", str),
         R = Simple("PV prefix 2", str),
         CLASS_NAME = Choice("Name of external plugin type", WORKER_TYPES),
+        IDENTITY = Simple("Source identity", str),
         NDARRAY_PORT = Ident('Input array port', AsynPort),
         NDARRAY_ADDR = Simple('Input array port address', int),
         SOCKET_PATH = Simple("Path to unix socket", str),

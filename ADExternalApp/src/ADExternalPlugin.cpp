@@ -49,15 +49,15 @@ static const char *driverName = "ADExternalPlugin";
 
 ADExternalPlugin::ADExternalPlugin(
     const char *portNameArg, const char *socketPath, const char *shmName,
-    const char *className, int queueSize, int blockingCallbacks,
-    const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
-    int priority, int stackSize)
+    const char *className, const char *identity, int queueSize,
+    int blockingCallbacks, const char *NDArrayPort, int NDArrayAddr,
+    size_t maxMemory, int priority, int stackSize)
     : NDPluginDriver(portNameArg, queueSize,
         blockingCallbacks, NDArrayPort, NDArrayAddr, 1, 0, maxMemory,
         asynGenericPointerMask|asynFloat64ArrayMask,
         asynGenericPointerMask|asynFloat64ArrayMask, 0, 1,
         priority, stackSize, 1), shmName(shmName), className(className),
-        nextParam(0)
+        identity(identity), nextParam(0)
 {
     server = server_create(socketPath);
     if (!server) {
@@ -84,9 +84,11 @@ ADExternalPlugin::ADExternalPlugin(
     createParam("WORKERSNUM", asynParamInt32, &workersNumParam);
     createParam("CLASSNAME", asynParamOctet, &classNameParam);
     createParam("PROCTIME", asynParamFloat64, &procTimeParam);
+    createParam("IDENTITY", asynParamOctet, &identityParam);
     setIntegerParam(workersNumParam, 0);
     setStringParam(classNameParam, className);
     setDoubleParam(procTimeParam, 0.0);
+    setStringParam(identityParam, identity);
     callParamCallbacks();
     pthread_mutex_init(&workersMutex, NULL);
     pthread_cond_init(&hasWorkerCond, NULL);

@@ -42,7 +42,7 @@ class ADExternalPlugin : public NDPluginDriver {
 public:
     ADExternalPlugin(const char *portName, const char *socketPath,
                      const char *shmName, const char *classname,
-                     int queueSize, int blockingCallbacks,
+                     const char *identity, int queueSize, int blockingCallbacks,
                      const char *NDArrayPort, int NDArrayAddr,
                      size_t maxMemory, int priority, int stackSize);
 
@@ -73,12 +73,15 @@ protected:
     int workersNumParam;
     int classNameParam;
     int procTimeParam;
+    int identityParam;
     int userParams[NUSERPARAMS];
 
 private:
     std::string shmName;
 
     std::string className;
+
+    std::string identity;
 
     size_t max_frame_size;
 

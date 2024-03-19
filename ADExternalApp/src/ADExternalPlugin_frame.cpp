@@ -26,6 +26,8 @@ bool ADExternalPlugin::_send_frame_to_worker(
         writer.Int((int) pArray->dims[i].size);
     }
     writer.EndArray();
+    writer.String("identity");
+    writer.String(identity.c_str());
     writer.String("data_type");
     writer.String(ad_data_type_to_string(pArray->dataType));
     writer.String("frame_id");

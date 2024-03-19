@@ -40,11 +40,11 @@ area for the output frame.
 - Configure the plugin in the target IOC
 ```c
 # ADExternalConfig(
-#    portName, socketPath, shmName, className,
+#    portName, socketPath, shmName, className, identity,
 #    queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory,
 #    priority, stackSize)
 ADExternalConfig(
-    "ad.ext", "/tmp/unix_sock_name.sock", "shm_name1", "Template",
+    "ad.ext", "/tmp/unix_sock_name.sock", "shm_name1", "Template", "",
     5, 1, "ad.cam", 0, 67108864,
     0, 0)
 ```
