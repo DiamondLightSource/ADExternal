@@ -108,6 +108,11 @@ class ADExternalPlugin(object):
         self.sock.connect(socket_path)
         self.socket_path = socket_path
 
+    def close(self):
+        if self.sock:
+            self.sock.close()
+            self.sock = None
+
     def _update_from_recved_params(self, params):
         if params:
             self._params.update(params)
@@ -221,3 +226,5 @@ class ADExternalPlugin(object):
                     self.post_process_hook(arr, in_msg, out_msg)
 
                 self._send_msg(out_msg)
+
+            self.close()
