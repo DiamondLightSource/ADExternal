@@ -86,6 +86,27 @@ record(ai, "$(P)$(R)SigmaY_RBV") {
     field(PREC, "3")
 }
 
+record(ai, "$(P)$(R)A_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dA")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)B_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dB")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)C_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dC")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
 record(ai, "$(P)$(R)Angle_RBV") {
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))dAngle")

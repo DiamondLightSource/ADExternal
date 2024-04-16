@@ -11,8 +11,6 @@ from fit_lib.levmar import FitError
 
 from ADExternalPlugin import ADExternalPlugin
 
-import scipy.ndimage
-
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -41,7 +39,10 @@ class Gaussian2DFitter(ADExternalPlugin):
                       sFitStatus='',
                       iFitType=-1,
                       dMinPixelLevel=0.0,
-                      iFit0Enabled=0)
+                      iFit0Enabled=0,
+                      dA=0.0,
+                      dB=0.0,
+                      dC=0.0)
         self.fitting_function = doFit2dGaussian
         ADExternalPlugin.__init__(self, socket_path, params)
 
@@ -86,6 +87,9 @@ class Gaussian2DFitter(ADExternalPlugin):
             self['iPeakHeight'] = int(fit[1])
             self['iOriginX'] = int(fit[2])
             self['iOriginY'] = int(fit[3])
+            self['dA'] = float(fit[4])
+            self['dB'] = float(fit[5])
+            self['dC'] = float(fit[6])
             self['dSigmaX'] = s_x
             self['dSigmaY'] = s_y
             self['dAngle'] = th
