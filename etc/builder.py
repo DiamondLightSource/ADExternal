@@ -105,16 +105,15 @@ class ADExternal(AsynPort):
             pass
 
     def InitialiseOnce(self):
-        # we can't do this in the constructor because ioc_name was not
-        # at that time
-        if self.SHM_NAME == "":
-            self.SHM_NAME = "shm_{}".format(iocinit.iocInit().ioc_name)
-
         print("# ADExternalConfig(portName, socketPath, shmName, className, "
               "identity, queueSize, blockingCallbacks, NDArrayPort, "
               "NDArrayAddr, maxMemory, priority, stackSize)")
 
     def Initialise(self):
+        # we can't do this in the constructor because ioc_name was not # at that time
+        if self.SHM_NAME == "":
+            self.SHM_NAME = "shm_{}".format(iocinit.iocInit().ioc_name)
+
         print(
             "ADExternalConfig(\"{PORT}\", \"{SOCKET_PATH}\", \"{SHM_NAME}\", "
              "\"{CLASS_NAME}\", \"{IDENTITY}\", {QUEUE}, {BLOCK}, "
