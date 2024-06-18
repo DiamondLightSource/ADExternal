@@ -25,8 +25,9 @@ TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
 # TOOLS_BASE=None
 # SUPPORT=None
 
-ASYN=/dls_sw/prod/R3.14.12.7/support/asyn/4-41
-ADCORE=/home/hir12111/work/src/AD/ADCore
+SUPPORT=/dls_sw/prod/R3.14.12.7/support
+ASYN=$(SUPPORT)/asyn/4-41dls2
+ADCORE=$(SUPPORT)/ADCore/3-13dls1
 
 # EPICS_BASE usually appears last so other apps can override stuff:
 EPICS_BASE=/dls_sw/epics/R3.14.12.7/base
