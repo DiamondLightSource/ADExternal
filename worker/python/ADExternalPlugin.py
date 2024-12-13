@@ -227,4 +227,4 @@ class ADExternalPlugin(object):
 
                 self._send_msg(out_msg)
 
-            self.close()
+        self.close()
