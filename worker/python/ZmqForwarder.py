@@ -15,7 +15,7 @@ def parse_args():
     parser.add_argument(
         'socket_path', help='Path to unix socket to talk to AD plugin')
     parser.add_argument(
-        'class_name', help='Worker class we will isntanciate and interpose')
+        'class_name', help='Worker class we will instantiate and interpose')
     parser.add_argument(
         'endpoint', help='ZMQ endpoint to send frame information')
     parser.add_argument(
